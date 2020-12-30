@@ -12,9 +12,15 @@
  Por ahora los siguientes grupos son soportados:
  
  -Sistema
+ 
  -Temperatura
+ 
  -Voltaje
+ 
  -Energia
+ 
  -Ventiladores
+ 
  -Ventilador grafica
+ 
  -Corriente
