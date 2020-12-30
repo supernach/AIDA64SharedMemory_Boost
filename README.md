@@ -10,6 +10,7 @@
  En el programa AIDA64 Extreme(version trial) https://www.aida64.com/downloads hay que activar Shared Memory e indicarle que valores quieres que muestre https://www.aida64.co.uk/user-manual/external-applications. 
  
  Por ahora los siguientes grupos son soportados:
+ 
  -Sistema
  -Temperatura
  -Voltaje
