@@ -15,13 +15,15 @@
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add directory="I:/boost175" />
 					<Add directory="include" />
+					<Add directory="I:/boost175" />
 				</Compiler>
 				<Linker>
+					<Add option="-lws2_32" />
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
 					<Add option="-static" />
+					<Add directory="I:/boost175" />
 				</Linker>
 			</Target>
 			<Target title="Release">
