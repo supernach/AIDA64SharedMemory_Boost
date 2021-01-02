@@ -29,12 +29,23 @@ class SerialComm
 
         bool EstaConectado();
         void EscanearPuertos(uint16_t baudios);
-        uint8_t getEstado();
+        bool EstaLibre();
 
 
     protected:
 
     private:
+
+        enum class eEstadoComm
+        {
+            DESCONECTADO = 0,
+            CONECTADO,
+            STANDBY,
+            BLOQUEADO,
+            ERR
+        };
+
+        eEstadoComm estadoComm = eEstadoComm::DESCONECTADO;
 
         boostAsio::io_service io;
         boostAsio::serial_port serial;
@@ -52,11 +63,12 @@ class SerialComm
                 "./COM10",
             };
 
-        uint8_t estado = 0; // 0=desconectado; 1=conectado; 2=escribiendo; 3=escrito; 4=leyendo; 5=leido;
+        //uint8_t estadoActual = estado.DESCONECTADO; // 0=desconectado; 1=conectado; 2=escribiendo; 3=escrito; 4=leyendo; 5=leido;
 
         Data bufferLectura;
 
         bool flagAuxLeer = false;
+
 
 
 
