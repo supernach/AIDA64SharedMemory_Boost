@@ -13,8 +13,6 @@ SerialComm::~SerialComm()
 
 bool SerialComm::Conectar(const char* puerto, uint16_t baudios)
 {
-
-
     try
     {
         this->serial.open(puerto);
@@ -27,20 +25,21 @@ bool SerialComm::Conectar(const char* puerto, uint16_t baudios)
             this->serial.set_option(boostAsio::serial_port_base::stop_bits(boostAsio::serial_port::stop_bits::one));
             this->serial.set_option(boostAsio::serial_port_base::flow_control(boostAsio::serial_port::flow_control::none));
 
-            std::cout << "Puerto: " << puerto << " ha sido abierto" << std::endl;
+            std::cout << "Serialcomm::Conectar() nPuerto= " << puerto << std::endl;
 
-            this->estado = 1;
+            this->estadoComm = eEstadoComm::CONECTADO;
 
             return true;
         }
         else
         {
-            this->estado = 0;
+            this->estadoComm = eEstadoComm::DESCONECTADO;
             return false;
         }
     }
     catch(boost::system::system_error& ex)
     {
+        this->estadoComm = eEstadoComm::ERR;
         std::cout << "Puerto: " << puerto << " no se pudo abrir. Fallo: " << ex.what() << std::endl;
         return false;
     }
@@ -54,13 +53,14 @@ void SerialComm::Desconectar()
         if(this->serial.is_open())
         {
             this->serial.close();
-            this->estado = 0;
+            this->estadoComm = eEstadoComm::DESCONECTADO;
             std::cout << "Puerto cerrado" << std::endl;
         }
 
     }
     catch(boost::system::system_error& ex)
     {
+        this->estadoComm = eEstadoComm::ERR;
         std::cout << "Puerto.close Fallo: " << ex.what() << std::endl;
     }
 
@@ -71,13 +71,13 @@ std::size_t SerialComm::Escribir(std::string datos)
     std::size_t bytesEscritos = 0;
     try
     {
-        this->estado = 2;
         bytesEscritos = boostAsio::write(this->serial, boostAsio::buffer(datos.c_str(), datos.size()));
-        this->estado = 3;
+        this->estadoComm = eEstadoComm::BLOQUEADO;
 
     }
     catch(boost::system::system_error& ex)
     {
+        this->estadoComm = eEstadoComm::ERR;
         std::cout << "::Escribir Fallo: " << ex.what() << std::endl;
     }
 
@@ -94,13 +94,12 @@ std::size_t SerialComm::EscribirCaracter(char caracter)
     char c = caracter;
     try
     {
-        this->estado = 2;
         bytesEscritos = boostAsio::write(this->serial, boostAsio::buffer(&c, 1));
-        this->estado = 3;
-
+        this->estadoComm = eEstadoComm::BLOQUEADO;
     }
     catch(boost::system::system_error& ex)
     {
+        this->estadoComm = eEstadoComm::ERR;
         std::cout << "::Escribir Fallo: " << ex.what() << std::endl;
     }
 
@@ -113,48 +112,62 @@ std::size_t SerialComm::EscribirCaracter(char caracter)
 
 std::string SerialComm::LeerLinea()
 {
-    std::string cadena;
-    char obuf[2];
     size_t len;
     boostAsio::streambuf b;
-
-    std::cout << "LEERLINEA().EMPIEZA READ()" << std::endl;
-
-    this->estado = 4;
-    try
-    {
-        //len = boostAsio::read(this->serial, boostAsio::buffer(obuf, sizeof(obuf)));
-
-        len = boostAsio::read(this->serial, b, boostAsio::transfer_exactly(2));
-        //std::cout << b.prepare() << std::endl;
-        /*std::cout << obuf[0] << std::endl;
-        std::cout << obuf[1] << std::endl;*/
-    }
-    catch(boost::system::system_error& ex)
-    {
-        std::cout << "::Escribir Fallo: " << ex.what() << std::endl;
-    }
-
-    this->estado = 5;
-
-    std::istream is(&b);
     std::string line;
-    std::getline(is, line);
 
-    std::cout << line << std::endl;
+    if(!this->EstaLibre())
+    {
+        try
+        {
+            len = boostAsio::read_until(this->serial, b, '\n');
+        }
+        catch(boost::system::system_error& ex)
+        {
+            this->estadoComm = eEstadoComm::ERR;
+            std::cout << "::Escribir Fallo: " << ex.what() << std::endl;
+        }
 
-    /*Data d = {};
-    memcpy( &d, obuf, sizeof(d) );
+        std::istream is(&b);
+        std::getline(is, line);
+        if(line.compare("OK") == 0)
+        {
+            this->estadoComm = eEstadoComm::STANDBY;
+        }
 
-    std::cout << sizeof(d) << std::endl;
-    std::cout << len << std::endl;
-    std::cout << d.header1 << std::endl;
-    std::cout << d.header2 << std::endl;*/
-    //std::cout << d.header3 << std::endl;
+        b.consume(len);
+        return line;
+    }
+    else
+    {
 
-    std::cout << "LEERLINEA().TERMINA READ()" << std::endl;
+        std::cout << "LEERLINEA().EMPIEZA READ()" << std::endl;
 
-    return line;
+        try
+        {
+            this->estadoComm = eEstadoComm::BLOQUEADO;
+
+            len = boostAsio::read_until(this->serial, b, '\n');
+
+        }
+        catch(boost::system::system_error& ex)
+        {
+            this->estadoComm = eEstadoComm::ERR;
+            std::cout << "::Escribir Fallo: " << ex.what() << std::endl;
+        }
+
+        std::istream is(&b);
+        std::getline(is, line);
+
+        std::cout << line << std::endl;
+
+        this->estadoComm = eEstadoComm::STANDBY;
+
+        std::cout << "LEERLINEA().TERMINA READ()" << std::endl;
+
+        b.consume(len);
+        return line;
+    }
 }
 
 char SerialComm::LeerCaracter()
@@ -163,11 +176,11 @@ char SerialComm::LeerCaracter()
 
     std::cout << "LEERCARACTER().EMPIEZA READ()" << std::endl;
 
-    this->estado = 4;
+    this->estadoComm = eEstadoComm::BLOQUEADO;
 
     size_t len = boostAsio::read(this->serial, boostAsio::buffer(&c, 1));
 
-    this->estado = 5;
+    this->estadoComm = eEstadoComm::STANDBY;
 
     std::cout << len << std::endl;
     std::cout << c << std::endl;
@@ -177,9 +190,10 @@ char SerialComm::LeerCaracter()
     return c;
 }
 
-uint8_t SerialComm::getEstado()
+bool SerialComm::EstaLibre()
 {
-    return this->estado;
+    if( (this->estadoComm == eEstadoComm::CONECTADO) || (this->estadoComm == eEstadoComm::STANDBY) ) return true;
+    else return false;
 }
 
 bool SerialComm::EstaConectado()
