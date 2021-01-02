@@ -22,7 +22,7 @@ bool SerialComm::Conectar(const char* puerto, uint16_t baudios)
         if(this->serial.is_open())
         {
             this->serial.set_option(boostAsio::serial_port_base::baud_rate(baudios));
-            this->serial.set_option(boostAsio::serial_port_base::parity(boostAsio::serial_port::parity::even));
+            this->serial.set_option(boostAsio::serial_port_base::parity(boostAsio::serial_port::parity::none));
             this->serial.set_option(boostAsio::serial_port_base::character_size(boostAsio::serial_port::character_size(8)));
             this->serial.set_option(boostAsio::serial_port_base::stop_bits(boostAsio::serial_port::stop_bits::one));
             this->serial.set_option(boostAsio::serial_port_base::flow_control(boostAsio::serial_port::flow_control::none));
