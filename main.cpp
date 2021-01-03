@@ -27,7 +27,7 @@ int main()
         }
         else
         {
-            std::cout << "commEsp8266::LeerLinea() Data= " << commEsp8266.LeerLinea() << std::endl;
+            std::cout << "commEsp8266::LeerLinea() Data= " << commEsp8266.Leer() << std::endl;
         }
 
       /*  for(uint32_t i = 0; i <= 100000; i++)
