@@ -7,13 +7,6 @@
 
 namespace boostAsio = boost::asio;
 
-struct Data
-{
-    char header1;
-    char header2;
-    //char header3;
-};
-
 class SerialComm
 {
     public:
@@ -22,13 +15,11 @@ class SerialComm
 
         bool Conectar(const char* puerto, uint16_t baudios);
         void Desconectar();
-        std::size_t Escribir(std::string datos);
-        std::size_t EscribirCaracter(char caracter);
-        std::string LeerLinea();
+        uint16_t Escribir(std::string datos);
+        std::string Leer(char delim = '\n');
         char LeerCaracter();
 
-        bool EstaConectado();
-        void EscanearPuertos(uint16_t baudios);
+
         bool EstaLibre();
 
 
@@ -36,11 +27,19 @@ class SerialComm
 
     private:
 
+        void Init();
+        void EscanearPuertos();
+        void ConfigurarConexion();
+
+
         enum class eEstadoComm
         {
             DESCONECTADO = 0,
+            CONECTANDO,
             CONECTADO,
             STANDBY,
+            ESCRIBIENDO,
+            LEYENDO,
             BLOQUEADO,
             ERR
         };
@@ -63,11 +62,14 @@ class SerialComm
                 "./COM10",
             };
 
-        //uint8_t estadoActual = estado.DESCONECTADO; // 0=desconectado; 1=conectado; 2=escribiendo; 3=escrito; 4=leyendo; 5=leido;
-
-        Data bufferLectura;
-
         bool flagAuxLeer = false;
+
+        const char* puerto = "/COM3";
+        uint16_t baudios = 9600;
+        boostAsio::serial_port::parity::type paridad = boostAsio::serial_port::parity::none;
+        uint16_t tamCaracter = 8;
+        boostAsio::serial_port::stop_bits::type bitsParada = boostAsio::serial_port::stop_bits::one;
+        boostAsio::serial_port::flow_control::type controlFlujo = boostAsio::serial_port::flow_control::none;
 
 
 
