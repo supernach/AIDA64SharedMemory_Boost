@@ -46,9 +46,15 @@
 		</Compiler>
 		<Unit filename="include/Aida64SharedMemory.h" />
 		<Unit filename="include/SerialComm.h" />
+		<Unit filename="include/SerialConfig.h" />
+		<Unit filename="include/SerialHard.h" />
+		<Unit filename="include/SerialSoft.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Aida64SharedMemory.cpp" />
 		<Unit filename="src/SerialComm.cpp" />
+		<Unit filename="src/SerialConfig.cpp" />
+		<Unit filename="src/SerialHard.cpp" />
+		<Unit filename="src/SerialSoft.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
