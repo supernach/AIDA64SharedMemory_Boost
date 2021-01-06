@@ -8799,9 +8799,9 @@
 	<boost/property_tree/xml_parser.hpp>
 	<boost/interprocess/exceptions.hpp>
 
-1609711452 source:i:\proyectoscodeblocks\aida64sharedmemory_boost\main.cpp
+1609954725 source:i:\proyectoscodeblocks\aida64sharedmemory_boost\main.cpp
 	<Aida64SharedMemory.h>
-	<SerialComm.h>
+	<SerialHard.h>
 
 1608744866 i:\proyectoscodeblocks\aida64sharedmemory_boost\include\aida64sharedmemory.h
 	<iostream>
@@ -17600,7 +17600,7 @@
 1609271452 source:i:\proyectoscodeblocks\aida64sharedmemory_boost\src\aida64sharedmemory.cpp
 	"Aida64SharedMemory.h"
 
-1609712763 source:i:\proyectoscodeblocks\aida64sharedmemory_boost\src\serialcomm.cpp
+1609715577 source:i:\proyectoscodeblocks\aida64sharedmemory_boost\src\serialcomm.cpp
 	"SerialComm.h"
 
 1609715577 i:\proyectoscodeblocks\aida64sharedmemory_boost\include\serialcomm.h
@@ -23687,4 +23687,23 @@
 	<boost/asio/detail/throw_error.hpp>
 	<boost/asio/detail/push_options.hpp>
 	<boost/asio/detail/pop_options.hpp>
+
+1609788490 source:i:\proyectoscodeblocks\aida64sharedmemory_boost\src\serialsoft.cpp
+	"SerialSoft.h"
+
+1609788490 i:\proyectoscodeblocks\aida64sharedmemory_boost\include\serialsoft.h
+
+1609952205 source:i:\proyectoscodeblocks\aida64sharedmemory_boost\src\serialconfig.cpp
+	"SerialConfig.h"
+
+1609951952 i:\proyectoscodeblocks\aida64sharedmemory_boost\include\serialconfig.h
+	<boost/asio.hpp>
+
+1609954370 source:i:\proyectoscodeblocks\aida64sharedmemory_boost\src\serialhard.cpp
+	"SerialHard.h"
+
+1609955800 i:\proyectoscodeblocks\aida64sharedmemory_boost\include\serialhard.h
+	<iostream>
+	<boost/asio.hpp>
+	<SerialConfig.h>
 
